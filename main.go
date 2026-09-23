@@ -28,7 +28,7 @@ func main() {
 		switch action {
 		case "1":
 			color.Blue("New ideas connect us; start creating a new one.\n")
-			models.CrateIdea()
+			models.CreateIdea()
 		case "2":
 			color.Blue("This is how your mind is made...")
 		case "3":

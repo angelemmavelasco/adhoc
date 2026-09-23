@@ -9,34 +9,32 @@ import (
 
 // An Idea struct works as a node in the graph database.
 // The structure is composed of:
+//   - ID: idea id.
 //   - Title: a representative short description.
-//   - OriginalContent: the raw content entered by the user.
-//   - KeyWords: a little refactor made by a llm, this keeps more clean and accessible idea.
+//   - Content: the raw content entered by the user.
+//   - KeyWords: slice which contains the keyword that belong to this idea.
 type Idea struct {
-	Title           string
-	OriginalContent string
-	KeyWords        []string
+	ID       int64
+	Title    string
+	Content  string
+	KeyWords []string
 }
 
-func ideaHash(i Idea) string {
-	return i.Title
-}
-
-func CrateIdea() {
+func CreateIdea() {
 	var IdeaTitle string
 	color.Blue("Title: ")
 	fmt.Scanln(&IdeaTitle)
 
-	var IdeaOriginalContent string
+	var IdeaContent string
 	color.Blue("Content: ")
-	fmt.Scanln(&IdeaOriginalContent)
+	fmt.Scanln(&IdeaContent)
 
 	var IdeaKeyWordsList string
 	color.Blue("Keywords (separated by colons, e.g. phone, internet, web: ")
 	fmt.Scanln(&IdeaKeyWordsList)
 	IdeaKeyWords := strings.Split(IdeaKeyWordsList, ";")
 
-	idea := Idea{IdeaTitle, IdeaOriginalContent, IdeaKeyWords}
+	idea := Idea{IdeaTitle, IdeaContent, IdeaKeyWords}
 
 	fmt.Println(idea)
 	return

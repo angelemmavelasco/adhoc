@@ -1,5 +1,5 @@
 # Ad Hoc
-Ad hoc is a indexation-based notes system, based in what wikipedia does.
+Ad hoc is a indexation-based notes system, based on what wikipedia does.
 
 Every note is related to some other one by indexes, for example:
 
