@@ -13,10 +13,11 @@ func main() {
 	fmt.Println("We are setting all for you...")
 
 	color.Green("Initializing ideas")
-	err := store.InitDatabase()
+	db, err := store.InitDatabase()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+	defer db.Close()
 	color.Green("Ready!\n\n")
 
 	fmt.Println("What are we gonna do today?")
