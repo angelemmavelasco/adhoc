@@ -1,15 +1,23 @@
 package main
 
 import (
+	"adhoc/internal/store"
 	"fmt"
-
-	"adhoc/internal/models"
+	"log"
 
 	"github.com/fatih/color"
 )
 
 func main() {
-	color.Cyan("We are AdHoc\n")
+	color.Cyan("We are AdHoc")
+	fmt.Println("We are setting all for you...")
+
+	color.Green("Initializing ideas")
+	err := store.InitDatabase()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	color.Green("Ready!\n\n")
 
 	fmt.Println("What are we gonna do today?")
 
@@ -28,7 +36,6 @@ func main() {
 		switch action {
 		case "1":
 			color.Blue("New ideas connect us; start creating a new one.\n")
-			models.CreateIdea()
 		case "2":
 			color.Blue("This is how your mind is made...")
 		case "3":
