@@ -28,19 +28,7 @@ func main() {
 		switch action {
 		case "1":
 			color.Blue("New ideas connect us; start creating a new one.\n")
-
-			var IdeaTitle string
-			color.Blue("Title: ")
-			fmt.Scanln(&IdeaTitle)
-
-			var IdeaOriginalContent string
-			color.Blue("Content: ")
-			fmt.Scanln(&IdeaOriginalContent)
-
-			IdeaRefactorizedContent := IdeaOriginalContent
-
-			idea := models.Idea{IdeaTitle, IdeaOriginalContent, IdeaRefactorizedContent}
-			models.CrateIdea(idea)
+			models.CrateIdea()
 		case "2":
 			color.Blue("This is how your mind is made...")
 		case "3":
