@@ -35,20 +35,24 @@ func (s *store) Create(idea *models.Idea) (*models.Idea, error) {
 	if idea.Title == "" || idea.Content == "" {
 		return nil, fmt.Errorf("title or content is required")
 	}
-	idea.CreatedAt = time.Now()
-	idea.UpdatedAt = time.Now()
-
 	query := `
-		INSERT INTO idea (title, content, created_at, updated_at) VALUES ($1, $2, $3, $4)
+		INSERT INTO idea (title, content, created_at, updated_at) VALUES (?, ?,?,?);
 	`
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	if _, err := s.db.ExecContext(ctx, query); err != nil {
-		_ = s.db.Close()
-		return nil, fmt.Errorf("Error while initializing tables: %w", err)
-	}
 	defer cancel()
+	result, err := s.db.ExecContext(ctx, query, idea.Title, idea.Content, idea.CreatedAt, idea.UpdatedAt)
+	if err != nil {
+		return nil, fmt.Errorf("failed to insert idea: %w", err)
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get last inserted id: %w", err)
+	}
+
+	idea.ID = id
 	return &models.Idea{}, nil
 }
+
 func (s *store) Update(id int, idea *models.Idea) (*models.Idea, error) {
 	return &models.Idea{}, nil
 }

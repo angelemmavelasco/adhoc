@@ -20,7 +20,6 @@ func InitDatabase() (*sql.DB, error) {
 		_ = db.Close()
 		return nil, fmt.Errorf("Error while activating foreign keys: %w", err)
 	}
-	defer db.Close()
 
 	query := `
 	CREATE TABLE IF NOT EXISTS idea (
