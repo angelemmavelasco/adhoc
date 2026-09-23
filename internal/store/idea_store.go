@@ -50,7 +50,7 @@ func (s *store) Create(idea *models.Idea) (*models.Idea, error) {
 	}
 
 	idea.ID = id
-	return &models.Idea{}, nil
+	return idea, nil
 }
 
 func (s *store) Update(id int, idea *models.Idea) (*models.Idea, error) {
