@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-type Store interface {
+type IdeaStore interface {
 	GetAll() ([]*models.Idea, error)
 	GetByID(id int) (*models.Idea, error)
 	Create(idea *models.Idea) (*models.Idea, error)
@@ -16,22 +16,22 @@ type Store interface {
 	Delete(id int) error
 }
 
-type store struct {
+type ideaStore struct {
 	db *sql.DB
 }
 
-func New(db *sql.DB) Store {
-	return &store{db: db}
+func NewIdeaConn(db *sql.DB) IdeaStore {
+	return &ideaStore{db: db}
 }
 
-func (s *store) GetAll() ([]*models.Idea, error) {
+func (s *ideaStore) GetAll() ([]*models.Idea, error) {
 
 	return []*models.Idea{}, nil
 }
-func (s *store) GetByID(id int) (*models.Idea, error) {
+func (s *ideaStore) GetByID(id int) (*models.Idea, error) {
 	return &models.Idea{}, nil
 }
-func (s *store) Create(idea *models.Idea) (*models.Idea, error) {
+func (s *ideaStore) Create(idea *models.Idea) (*models.Idea, error) {
 	if idea.Title == "" || idea.Content == "" {
 		return nil, fmt.Errorf("title or content is required")
 	}
@@ -53,9 +53,9 @@ func (s *store) Create(idea *models.Idea) (*models.Idea, error) {
 	return idea, nil
 }
 
-func (s *store) Update(id int, idea *models.Idea) (*models.Idea, error) {
+func (s *ideaStore) Update(id int, idea *models.Idea) (*models.Idea, error) {
 	return &models.Idea{}, nil
 }
-func (s *store) Delete(id int) error {
+func (s *ideaStore) Delete(id int) error {
 	return nil
 }

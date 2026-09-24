@@ -32,7 +32,7 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			return err
 		}
-		ideaStore := store.New(db)
+		ideaStore := store.NewIdeaConn(db)
 		IdeaService = services.NewIdeaService(ideaStore)
 		return nil
 	},

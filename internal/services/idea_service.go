@@ -8,10 +8,10 @@ import (
 )
 
 type IdeaService struct {
-	store store.Store
+	store store.IdeaStore
 }
 
-func NewIdeaService(store store.Store) *IdeaService {
+func NewIdeaService(store store.IdeaStore) *IdeaService {
 	return &IdeaService{store: store}
 }
 
@@ -24,11 +24,13 @@ func (svc *IdeaService) IngestIdea(title, content string, rawKeywords []string) 
 		}
 	}
 
+	now := time.Now()
+
 	idea := &models.Idea{
 		Title:     title,
 		Content:   content,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: now,
+		UpdatedAt: now,
 	}
 
 	createIdea, err := svc.store.Create(idea)

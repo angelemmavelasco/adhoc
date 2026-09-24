@@ -10,7 +10,7 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-// InitDatabase opens the SQLite store, enables foreign keys, and creates the idea, keyword, idea_keyword tables and edges view, returning a ready-to-use *sql.DB.
+// InitDatabase opens the SQLite ideaStore, enables foreign keys, and creates the idea, keyword, idea_keyword tables and edges view, returning a ready-to-use *sql.DB.
 func InitDatabase() (*sql.DB, error) {
 	db, err := sql.Open("sqlite", "./db.sqlite")
 	if err != nil {
