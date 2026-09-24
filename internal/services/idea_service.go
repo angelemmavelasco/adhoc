@@ -12,16 +12,31 @@ import (
 type IdeaService struct {
 	ideaStore    store.IdeaStore
 	keywordStore store.KeywordStore
+	itkStore     store.KeywordStore
 }
 
-func NewIdeaService(ideaStore store.IdeaStore, keywordStore store.KeywordStore) *IdeaService {
-	return &IdeaService{ideaStore: ideaStore, keywordStore: keywordStore}
+func NewIdeaService(ideaStore store.IdeaStore, keywordStore store.KeywordStore, ideaToKwStore store.KeywordStore) *IdeaService {
+	return &IdeaService{ideaStore: ideaStore, keywordStore: keywordStore, itkStore: ideaToKwStore}
 }
 
 // IngestIdea creates and persists a new idea, normalizing raw keywords and assigning timestamps.
 func (svc *IdeaService) IngestIdea(title, content string, rawKeywords []string) (*models.Idea, error) {
 	//set timestamp
 	now := time.Now()
+
+	idea := &models.Idea{
+		Title:     title,
+		Content:   content,
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	createIdea, err := svc.ideaStore.Create(idea)
+	if err != nil {
+		return nil, err
+	}
+	ideaID := createIdea.ID
+
 	//initialize an empty slice from 0 to max len raw kw capacity
 	keywords := make([]string, 0, len(rawKeywords))
 
@@ -39,24 +54,14 @@ func (svc *IdeaService) IngestIdea(title, content string, rawKeywords []string) 
 			CreatedAt: now,
 			UpdatedAt: now,
 		}
-		_, err := svc.keywordStore.Create(cKeyword)
+		createdKw, err := svc.keywordStore.Create(cKeyword)
 		if err != nil {
 			return nil, err
 		}
+		color.Magenta("New node was created:\n	node: %v\n	edge: %v", ideaID, createdKw.ID)
 		color.Yellow("	Attached keyword %v", cleaned)
 	}
 
-	idea := &models.Idea{
-		Title:     title,
-		Content:   content,
-		CreatedAt: now,
-		UpdatedAt: now,
-	}
-
-	createIdea, err := svc.ideaStore.Create(idea)
-	if err != nil {
-		return nil, err
-	}
 	return createIdea, nil
 
 }

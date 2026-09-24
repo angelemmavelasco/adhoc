@@ -34,7 +34,8 @@ to quickly create a Cobra application.`,
 		}
 		ideaStore := store.NewIdeaConn(db)
 		keywordStore := store.NewKeywordConn(db)
-		IdeaService = services.NewIdeaService(ideaStore, keywordStore)
+		IdeaToKeywordConn := store.NewKeywordConn(db)
+		IdeaService = services.NewIdeaService(ideaStore, keywordStore, IdeaToKeywordConn)
 		return nil
 	},
 }
