@@ -34,4 +34,4 @@ go.work.sum
 .idea/
 
 db.sqlite
-*.sqlite
+*.sqlite.idea
