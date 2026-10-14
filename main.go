@@ -2,6 +2,8 @@ package main
 
 import (
 	"adhoc/internal/handlers"
+	"adhoc/internal/routes"
+	"adhoc/internal/services"
 	"fmt"
 	"net/http"
 
@@ -42,9 +44,9 @@ func helloWorld(c *gin.Context) {
 func main() {
 	fmt.Println("Hello")
 
-	ideaHandler := handlers.IdeaHandler{}
-	router :=
-
+	ideaService := services.NewIdeaService()
+	ideaHandler := handlers.NewIdeaHandler(ideaService)
+	router := routes.SetupRoutes(ideaHandler)
 
 	//router.GET("/hello-world/:name", helloWorld)
 	//router.POST("/new-idea", handlers.IdeaHandler{})
