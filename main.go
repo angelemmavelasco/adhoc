@@ -12,43 +12,43 @@ func helloWorld(c *gin.Context) {
 	c.String(http.StatusOK, "Hello world, %s", name)
 }
 
-func getting(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"method": "you're getting",
-	})
+func getIdeas(c *gin.Context) {
+	ideas := []gin.H{
+		{"id": 1, "title": "my interests", "content": "i like machine learning for biology"},
+		{"id": 2, "title": "available careers", "content": "studies in biology, statistics"},
+	}
+	c.JSON(http.StatusOK, ideas)
 }
 
-func posting(c *gin.Context) {
+func newIdea(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"method": "you're posting",
 	})
 }
 
-func putting(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"method": "you're putting",
-	})
-}
-
-func deleting(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"method": "you're deleting",
-	})
-}
+//func putting(c *gin.Context) {
+//	c.JSON(http.StatusOK, gin.H{
+//		"method": "you're putting",
+//	})
+//}
+//
+//func deleting(c *gin.Context) {
+//	c.JSON(http.StatusOK, gin.H{
+//		"method": "you're deleting",
+//	})
+//}
 
 func main() {
 	fmt.Println("Hello")
 
 	router := gin.Default()
 
-	router.GET("/someGet", getting)
-	router.GET("/helloWorld/:name", helloWorld)
+	router.GET("/get-ideas", getIdeas)
+	router.GET("/hello-world/:name", helloWorld)
+	router.POST("/new-idea", newIdea)
 
-	router.POST("/somePost", posting)
-
-	router.PUT("/somePut", putting)
-
-	router.DELETE("someDelete", deleting)
+	//router.PUT("/somePut", putting)
+	//router.DELETE("someDelete", deleting)
 
 	err := router.Run()
 	if err != nil {

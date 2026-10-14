@@ -22,7 +22,7 @@ There are three main tables in the database:
 
 ### Ideas
 The base of the note content. Here, the user enter the title and the content of the note, but, during the user input,
-keywords are also requested. These keywords are saved separately in the `Kewords` table.
+keywords are also requested. These keywords are saved separately in the `Keywords` table.
 
 | id int | title VARCHAR(255)          | content VARCHAR(255)                |
 |--------|-----------------------------|-------------------------------------|
