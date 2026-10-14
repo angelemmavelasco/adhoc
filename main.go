@@ -1,6 +1,7 @@
 package main
 
 import (
+	"adhoc/internal/handlers"
 	"fmt"
 	"net/http"
 
@@ -12,19 +13,19 @@ func helloWorld(c *gin.Context) {
 	c.String(http.StatusOK, "Hello world, %s", name)
 }
 
-func getIdeas(c *gin.Context) {
-	ideas := []gin.H{
-		{"id": 1, "title": "my interests", "content": "i like machine learning for biology"},
-		{"id": 2, "title": "available careers", "content": "studies in biology, statistics"},
-	}
-	c.JSON(http.StatusOK, ideas)
-}
-
-func newIdea(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"method": "you're posting",
-	})
-}
+//func getIdeas(c *gin.Context) {
+//	ideas := []gin.H{
+//		{"id": 1, "title": "my interests", "content": "i like machine learning for biology"},
+//		{"id": 2, "title": "available careers", "content": "studies in biology, statistics"},
+//	}
+//	c.JSON(http.StatusOK, ideas)
+//}
+//
+//func newIdea(c *gin.Context) {
+//	c.JSON(http.StatusOK, gin.H{
+//		"method": "you're posting",
+//	})
+//}
 
 //func putting(c *gin.Context) {
 //	c.JSON(http.StatusOK, gin.H{
@@ -41,12 +42,13 @@ func newIdea(c *gin.Context) {
 func main() {
 	fmt.Println("Hello")
 
-	router := gin.Default()
+	ideaHandler := handlers.IdeaHandler{}
+	router :=
 
-	router.GET("/get-ideas", getIdeas)
-	router.GET("/hello-world/:name", helloWorld)
-	router.POST("/new-idea", newIdea)
 
+	//router.GET("/hello-world/:name", helloWorld)
+	//router.POST("/new-idea", handlers.IdeaHandler{})
+	//router.GET("/get-ideas", getIdeas)
 	//router.PUT("/somePut", putting)
 	//router.DELETE("someDelete", deleting)
 
