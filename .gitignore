@@ -36,3 +36,4 @@ go.work.sum
 db.sqlite
 *.sqlite.idea
 .DS_Store
+.env

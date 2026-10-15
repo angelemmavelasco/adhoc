@@ -1,13 +1,16 @@
 package main
 
 import (
+	"adhoc/internal/clients"
 	"adhoc/internal/handlers"
 	"adhoc/internal/routes"
 	"adhoc/internal/services"
-	"fmt"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func helloWorld(c *gin.Context) {
@@ -15,36 +18,21 @@ func helloWorld(c *gin.Context) {
 	c.String(http.StatusOK, "Hello world, %s", name)
 }
 
-//func getIdeas(c *gin.Context) {
-//	ideas := []gin.H{
-//		{"id": 1, "title": "my interests", "content": "i like machine learning for biology"},
-//		{"id": 2, "title": "available careers", "content": "studies in biology, statistics"},
-//	}
-//	c.JSON(http.StatusOK, ideas)
-//}
-//
-//func newIdea(c *gin.Context) {
-//	c.JSON(http.StatusOK, gin.H{
-//		"method": "you're posting",
-//	})
-//}
-
-//func putting(c *gin.Context) {
-//	c.JSON(http.StatusOK, gin.H{
-//		"method": "you're putting",
-//	})
-//}
-//
-//func deleting(c *gin.Context) {
-//	c.JSON(http.StatusOK, gin.H{
-//		"method": "you're deleting",
-//	})
-//}
-
 func main() {
-	fmt.Println("Hello")
 
-	ideaService := services.NewIdeaService()
+	if err := godotenv.Load(); err != nil {
+		log.Println("Error: no se pudo cargar el archivo .env: ", err)
+	}
+
+	//minimaxApiKey for llm model
+	minimaxApiKey := os.Getenv("MINIMAX_API_KEY")
+	if minimaxApiKey == "" {
+		log.Fatal("ERROR: La variable MINIMAX_API_KEY está vacía o no se cargó")
+	}
+	aiClient := clients.NewMiniMaxClient(minimaxApiKey)
+
+	//ideaService to receive ideas and process them by the llm
+	ideaService := services.NewIdeaService(aiClient)
 	ideaHandler := handlers.NewIdeaHandler(ideaService)
 
 	keywordService := services.NewKeywordService()

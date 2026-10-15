@@ -14,6 +14,7 @@ func SetupRoutes(ideaHandler *handlers.IdeaHandler, keywordHandler *handlers.Key
 		v1.POST("/ideas", ideaHandler.NewIdea)
 		v1.GET("/ideas", ideaHandler.ReadIdeas)
 		v1.POST("/keywords", keywordHandler.NewKeyword)
+		v1.GET("/keywords", keywordHandler.ReadKeywords)
 	}
 	return r
 }
