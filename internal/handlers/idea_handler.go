@@ -13,7 +13,7 @@ type IdeaHandler struct {
 }
 
 func NewIdeaHandler(service services.IdeaService) *IdeaHandler {
-	return &IdeaHandler{service: service,}
+	return &IdeaHandler{service: service}
 }
 
 func (h *IdeaHandler) NewIdea(c *gin.Context) {
@@ -35,6 +35,21 @@ func (h *IdeaHandler) NewIdea(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Idea created successfuly",
-		"data": createdIdea,
+		"data":    createdIdea,
+	})
+}
+
+func (h *IdeaHandler) ReadIdeas(c *gin.Context) {
+	ideas, err := h.service.ReadIdeas()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Information retrieved successfuly",
+		"data":    ideas,
 	})
 }
