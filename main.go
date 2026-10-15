@@ -46,7 +46,11 @@ func main() {
 
 	ideaService := services.NewIdeaService()
 	ideaHandler := handlers.NewIdeaHandler(ideaService)
-	router := routes.SetupRoutes(ideaHandler)
+
+	keywordService := services.NewKeywordService()
+	keywordHandler := handlers.NewKeywordHandler(keywordService)
+
+	router := routes.SetupRoutes(ideaHandler, keywordHandler)
 
 	//router.GET("/hello-world/:name", helloWorld)
 	//router.POST("/new-idea", handlers.IdeaHandler{})
