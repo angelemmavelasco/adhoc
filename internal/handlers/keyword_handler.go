@@ -18,7 +18,7 @@ func NewKeywordHandler(service services.KeywordService) *KeywordHandler {
 
 func (h *KeywordHandler) ReadKeywords(c *gin.Context) {
 	keywords, err := h.service.ReadKeywords()
-	if err != {
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
 		})
@@ -26,7 +26,7 @@ func (h *KeywordHandler) ReadKeywords(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Keywords was retrieved successfuly",
-		"data": keywords,
+		"data":    keywords,
 	})
 }
 
