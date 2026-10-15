@@ -2,7 +2,9 @@ package services
 
 import (
 	"adhoc/internal/models"
+	"errors"
 	"strconv"
+	"strings"
 )
 
 type KeywordService interface {
@@ -31,9 +33,8 @@ func (s *keywordService) ReadKeywords() ([]*models.Keyword, error) {
 }
 
 func (s *keywordService) NewKeyword(keyword models.Keyword) (*models.Keyword, error) {
-	keyword = models.Keyword{
-		ID:      1,
-		Keyword: "k1",
+	if len(strings.TrimSpace(keyword.Keyword)) <= 0 {
+		return nil, errors.New("el nombre del t2ermino debe tener longitud de caracteres mayor a 0")
 	}
 	return &keyword, nil
 }
