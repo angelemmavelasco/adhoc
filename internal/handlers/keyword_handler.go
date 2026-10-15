@@ -16,6 +16,20 @@ func NewKeywordHandler(service services.KeywordService) *KeywordHandler {
 	return &KeywordHandler{service: service}
 }
 
+func (h *KeywordHandler) ReadKeywords(c *gin.Context) {
+	keywords, err := h.service.ReadKeywords()
+	if err != {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Keywords was retrieved successfuly",
+		"data": keywords,
+	})
+}
+
 func (h *KeywordHandler) NewKeyword(c *gin.Context) {
 	var input models.Keyword
 	if err := c.ShouldBindJSON(&input); err != nil {

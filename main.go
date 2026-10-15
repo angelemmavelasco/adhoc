@@ -52,12 +52,6 @@ func main() {
 
 	router := routes.SetupRoutes(ideaHandler, keywordHandler)
 
-	//router.GET("/hello-world/:name", helloWorld)
-	//router.POST("/new-idea", handlers.IdeaHandler{})
-	//router.GET("/get-ideas", getIdeas)
-	//router.PUT("/somePut", putting)
-	//router.DELETE("someDelete", deleting)
-
 	err := router.Run()
 	if err != nil {
 		return
