@@ -12,3 +12,4 @@ insert into ideas (
 ) values (
     ?, ?
 )
+returning *;
