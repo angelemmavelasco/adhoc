@@ -1,12 +1,12 @@
--- name: GetIdea :one
+-- name: ReadIdea :one
 select * from ideas
 where id = ? limit 1;
 
--- name: ListIdeas :many
+-- name: ReadIdeas :many
 select * from ideas
 order by title;
 
--- name: CreateIdea :one
+-- name: NewIdea :one
 insert into ideas (
     title, content
 ) values (

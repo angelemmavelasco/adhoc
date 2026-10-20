@@ -20,12 +20,12 @@ func (h *IdeaHandler) NewIdea(c *gin.Context) {
 	var input models.Idea
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid JSON format",
+			"error": "Invalid JSON format: " + err.Error(),
 		})
 		return
 	}
 
-	createdIdea, err := h.service.NewIdea(input)
+	createdIdea, err := h.service.NewIdea(c.Request.Context(), input)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"error": err.Error(),
@@ -40,10 +40,10 @@ func (h *IdeaHandler) NewIdea(c *gin.Context) {
 }
 
 func (h *IdeaHandler) ReadIdeas(c *gin.Context) {
-	ideas, err := h.service.ReadIdeas()
+	ideas, err := h.service.ReadIdeas(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}

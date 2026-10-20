@@ -2,9 +2,11 @@ package main
 
 import (
 	"adhoc/internal/clients"
+	"adhoc/internal/database"
 	"adhoc/internal/handlers"
 	"adhoc/internal/routes"
 	"adhoc/internal/services"
+	"database/sql"
 	"log"
 	"os"
 
@@ -13,20 +15,22 @@ import (
 )
 
 func main() {
-	//ctx := context.Background()
-	//dbConn, err := sql.Open("sqlite", "adhoc.db?_pragma=foreign_keys(1)")
-	//if err != nil {
-	//	log.Fatalf("error while connecting database %v", err)
-	//}
-	//defer dbConn.Close()
-	//
-	//queries := database.New(dbConn)
-	//
-	//idea, err := queries.
-
 	if err := godotenv.Load(); err != nil {
 		log.Println("Error: no se pudo cargar el archivo .env: ", err)
 	}
+
+	//database connection
+	dbConn, err := sql.Open("sqlite", "adhoc.db?_pragma=foreign_keys(1)")
+	if err != nil {
+		log.Fatalf("error while connecting database %v", err)
+	}
+	defer dbConn.Close()
+
+	if err := dbConn.Ping(); err != nil {
+		log.Fatalf("error while checking connection to database %v", err)
+	}
+
+	queries := database.New(dbConn)
 
 	//minimaxApiKey for llm model
 	minimaxApiKey := os.Getenv("MINIMAX_API_KEY")
@@ -36,7 +40,7 @@ func main() {
 	aiClient := clients.NewMiniMaxClient(minimaxApiKey)
 
 	//ideaService to receive ideas and process them by the llm
-	ideaService := services.NewIdeaService(aiClient)
+	ideaService := services.NewIdeaService(aiClient, queries)
 	ideaHandler := handlers.NewIdeaHandler(ideaService)
 
 	keywordService := services.NewKeywordService()
@@ -44,8 +48,8 @@ func main() {
 
 	router := routes.SetupRoutes(ideaHandler, keywordHandler)
 
-	err := router.Run()
-	if err != nil {
-		return
+	log.Println("Listening on port 8080")
+	if err := router.Run(":8080"); err != nil {
+		log.Fatalf("error while listening on port 8080 %v", err)
 	}
 }

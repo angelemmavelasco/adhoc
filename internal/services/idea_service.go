@@ -2,11 +2,11 @@ package services
 
 import (
 	"adhoc/internal/clients"
+	"adhoc/internal/database"
 	"adhoc/internal/models"
 	"context"
 	"errors"
 	"fmt"
-	"strconv"
 	"strings"
 )
 
@@ -15,23 +15,25 @@ Tu tarea es analizar todas las notas, ideas, listas de tareas y entradas que te 
 el usuario y reconocer cuales son los términos clave.`
 
 type IdeaService interface {
-	NewIdea(idea models.Idea) (*models.Idea, error)
-	ReadIdeas() ([]*models.Idea, error)
+	NewIdea(ctx context.Context, idea models.Idea) (*models.Idea, error)
+	ReadIdeas(ctx context.Context) ([]*models.Idea, error)
 }
 
 // ideaService private struct to connect with interface
 type ideaService struct {
 	aiClient clients.AIClient
+	queries  *database.Queries
 }
 
 // NewIdeaService constructor
-func NewIdeaService(aiClient clients.AIClient) IdeaService {
+func NewIdeaService(aiClient clients.AIClient, queries *database.Queries) IdeaService {
 	return &ideaService{
 		aiClient: aiClient,
+		queries:  queries,
 	}
 }
 
-func (s *ideaService) NewIdea(idea models.Idea) (*models.Idea, error) {
+func (s *ideaService) NewIdea(ctx context.Context, idea models.Idea) (*models.Idea, error) {
 	if len(strings.TrimSpace(idea.Title)) < 3 {
 		return nil, errors.New("el título debe tener al menos 3 caracteres")
 	}
@@ -40,22 +42,34 @@ func (s *ideaService) NewIdea(idea models.Idea) (*models.Idea, error) {
 		return nil, err
 	}
 	fmt.Printf("AI response: %s", aiResp)
-	return &idea, nil
+
+	dbIdea, err := s.queries.NewIdea(ctx, database.NewIdeaParams{
+		Title:   idea.Title,
+		Content: idea.Content,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("error creating idea: %v", err)
+	}
+
+	return &models.Idea{
+		ID:      int(dbIdea.ID),
+		Title:   dbIdea.Title,
+		Content: dbIdea.Content,
+	}, nil
 }
 
-func (s *ideaService) ReadIdeas() ([]*models.Idea, error) {
-	iter := 10
-	ideas := make([]*models.Idea, 0, iter)
-	for id := range iter {
-		idString := strconv.Itoa(id)
-		newIdea := models.Idea{
-			ID:      id,
-			Title:   "title" + idString,
-			Content: "Generic content " + idString,
-		}
-
-		ideas = append(ideas, &newIdea)
-
+func (s *ideaService) ReadIdeas(ctx context.Context) ([]*models.Idea, error) {
+	dbIdeas, err := s.queries.ReadIdeas(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("error listing ideas: %v", err)
+	}
+	ideas := make([]*models.Idea, 0, len(dbIdeas))
+	for _, idea := range dbIdeas {
+		ideas = append(ideas, &models.Idea{
+			ID:      int(idea.ID),
+			Title:   idea.Title,
+			Content: idea.Content,
+		})
 	}
 	return ideas, nil
 }
