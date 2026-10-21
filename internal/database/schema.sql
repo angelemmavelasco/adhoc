@@ -1,17 +1,17 @@
 -- internal/database/schema.sql
 
-CREATE TABLE ideas (
+CREATE TABLE IF NOT EXISTS ideas (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     content TEXT NOT NULL
 );
 
-CREATE TABLE keywords (
+CREATE TABLE IF NOT EXISTS keywords (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     keyword TEXT NOT NULL UNIQUE
 );
 
-CREATE TABLE idea_keywords (
+CREATE TABLE IF NOT EXISTS idea_keywords (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     idea_id INTEGER NOT NULL,
     keyword_id INTEGER NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE idea_keywords (
     FOREIGN KEY (keyword_id) REFERENCES keywords(id) ON DELETE CASCADE
 );
 
-CREATE TABLE edges (
+CREATE TABLE IF NOT EXISTS edges (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     source_idea INTEGER NOT NULL,
     target_idea INTEGER NOT NULL,
