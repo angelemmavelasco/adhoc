@@ -6,6 +6,7 @@ import (
 	"adhoc/internal/handlers"
 	"adhoc/internal/routes"
 	"adhoc/internal/services"
+	"context"
 	"database/sql"
 	"log"
 	"os"
@@ -22,12 +23,13 @@ func main() {
 	//database connection
 	dbConn, err := sql.Open("sqlite", "adhoc.db?_pragma=foreign_keys(1)")
 	if err != nil {
-		log.Fatalf("error while connecting database %v", err)
+		log.Fatalf("Error al conectarse a la base de datos %v", err)
 	}
 	defer dbConn.Close()
 
-	if err := dbConn.Ping(); err != nil {
-		log.Fatalf("error while checking connection to database %v", err)
+	ctx := context.Background()
+	if err := database.InitDB(ctx, dbConn); err != nil {
+		log.Fatalf("No se pudo inicializar la base de datos: %v", err)
 	}
 
 	queries := database.New(dbConn)
