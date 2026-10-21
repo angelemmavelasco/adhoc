@@ -1,35 +1,42 @@
 package services
 
 import (
+	"adhoc/internal/database"
 	"adhoc/internal/models"
+	"context"
 	"errors"
-	"strconv"
+	"fmt"
 	"strings"
 )
 
 type KeywordService interface {
-	ReadKeywords() ([]*models.Keyword, error)
+	ReadKeywords(ctx context.Context) ([]*models.Keyword, error)
 	NewKeyword(keyword models.Keyword) (*models.Keyword, error)
 }
 
-type keywordService struct{}
-
-func NewKeywordService() KeywordService {
-	return &keywordService{}
+type keywordService struct {
+	queries *database.Queries
 }
 
-func (s *keywordService) ReadKeywords() ([]*models.Keyword, error) {
-	iter := 10
-	keywords := make([]*models.Keyword, 0, iter)
-	for id := range iter {
-		idString := strconv.Itoa(id)
-		keyword := models.Keyword{
-			ID:      id,
-			Keyword: "keyword" + idString,
-		}
-		keywords = append(keywords, &keyword)
+func NewKeywordService(queries *database.Queries) KeywordService {
+	return &keywordService{
+		queries: queries,
 	}
-	return keywords, nil
+}
+
+func (s *keywordService) ReadKeywords(ctx context.Context) ([]*models.Keyword, error) {
+	dbKeywords, err := s.queries.ReadKeywords(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("error listing keywords %v", err)
+	}
+	kws := make([]*models.Keyword, 0, len(dbKeywords))
+	for _, kw := range dbKeywords {
+		kws = append(kws, &models.Keyword{
+			ID:      int(kw.ID),
+			Keyword: kw.Keyword,
+		})
+	}
+	return kws, nil
 }
 
 func (s *keywordService) NewKeyword(keyword models.Keyword) (*models.Keyword, error) {

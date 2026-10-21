@@ -30,6 +30,22 @@ func (q *Queries) NewIdea(ctx context.Context, arg NewIdeaParams) (Idea, error) 
 	return i, err
 }
 
+const newKeyword = `-- name: NewKeyword :one
+insert into keywords (
+                     keyword
+) values (
+          ?
+         )
+returning id, keyword
+`
+
+func (q *Queries) NewKeyword(ctx context.Context, keyword string) (Keyword, error) {
+	row := q.db.QueryRowContext(ctx, newKeyword, keyword)
+	var i Keyword
+	err := row.Scan(&i.ID, &i.Keyword)
+	return i, err
+}
+
 const readIdea = `-- name: ReadIdea :one
 select id, title, content from ideas
 where id = ? limit 1
@@ -57,6 +73,47 @@ func (q *Queries) ReadIdeas(ctx context.Context) ([]Idea, error) {
 	for rows.Next() {
 		var i Idea
 		if err := rows.Scan(&i.ID, &i.Title, &i.Content); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const readKeyword = `-- name: ReadKeyword :one
+select id, keyword from keywords
+where keyword = ? collate nocase
+limit 1
+`
+
+func (q *Queries) ReadKeyword(ctx context.Context, keyword string) (Keyword, error) {
+	row := q.db.QueryRowContext(ctx, readKeyword, keyword)
+	var i Keyword
+	err := row.Scan(&i.ID, &i.Keyword)
+	return i, err
+}
+
+const readKeywords = `-- name: ReadKeywords :many
+select id, keyword from keywords
+order by keyword
+`
+
+func (q *Queries) ReadKeywords(ctx context.Context) ([]Keyword, error) {
+	rows, err := q.db.QueryContext(ctx, readKeywords)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Keyword
+	for rows.Next() {
+		var i Keyword
+		if err := rows.Scan(&i.ID, &i.Keyword); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

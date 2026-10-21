@@ -43,7 +43,7 @@ func main() {
 	ideaService := services.NewIdeaService(aiClient, queries)
 	ideaHandler := handlers.NewIdeaHandler(ideaService)
 
-	keywordService := services.NewKeywordService()
+	keywordService := services.NewKeywordService(queries)
 	keywordHandler := handlers.NewKeywordHandler(keywordService)
 
 	router := routes.SetupRoutes(ideaHandler, keywordHandler)

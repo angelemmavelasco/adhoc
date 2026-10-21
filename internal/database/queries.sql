@@ -13,3 +13,22 @@ insert into ideas (
     ?, ?
 )
 returning *;
+
+
+
+-- name: ReadKeyword :one
+select * from keywords
+where keyword = ? collate nocase
+limit 1;
+
+-- name: ReadKeywords :many
+select * from keywords
+order by keyword;
+
+-- name: NewKeyword :one
+insert into keywords (
+                     keyword
+) values (
+          ?
+         )
+returning *;
