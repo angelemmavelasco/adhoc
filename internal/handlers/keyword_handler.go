@@ -39,7 +39,7 @@ func (h *KeywordHandler) NewKeyword(c *gin.Context) {
 		return
 	}
 
-	createdKeyword, err := h.service.NewKeyword(input)
+	createdKeyword, err := h.service.NewKeyword(c.Request.Context(), input)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"error": "Invalid JSON format",

@@ -11,7 +11,7 @@ import (
 
 type KeywordService interface {
 	ReadKeywords(ctx context.Context) ([]*models.Keyword, error)
-	NewKeyword(keyword models.Keyword) (*models.Keyword, error)
+	NewKeyword(ctx context.Context, keyword models.Keyword) (*models.Keyword, error)
 }
 
 type keywordService struct {
@@ -39,9 +39,18 @@ func (s *keywordService) ReadKeywords(ctx context.Context) ([]*models.Keyword, e
 	return kws, nil
 }
 
-func (s *keywordService) NewKeyword(keyword models.Keyword) (*models.Keyword, error) {
+func (s *keywordService) NewKeyword(ctx context.Context, keyword models.Keyword) (*models.Keyword, error) {
 	if len(strings.TrimSpace(keyword.Keyword)) <= 0 {
-		return nil, errors.New("el nombre del t2ermino debe tener longitud de caracteres mayor a 0")
+		return nil, errors.New("the number of chars to create a keyword must be greater than zero")
 	}
-	return &keyword, nil
+
+	dbKW, err := s.queries.NewKeyword(ctx, keyword.Keyword)
+	if err != nil {
+		return nil, fmt.Errorf("error creating keyword %v", err)
+	}
+
+	return &models.Keyword{
+		ID:      int(dbKW.ID),
+		Keyword: dbKW.Keyword,
+	}, nil
 }

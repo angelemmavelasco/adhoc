@@ -35,7 +35,7 @@ func NewIdeaService(aiClient clients.AIClient, queries *database.Queries) IdeaSe
 
 func (s *ideaService) NewIdea(ctx context.Context, idea models.Idea) (*models.Idea, error) {
 	if len(strings.TrimSpace(idea.Title)) < 3 {
-		return nil, errors.New("el título debe tener al menos 3 caracteres")
+		return nil, errors.New("title must be at least 3 characters long")
 	}
 	aiResp, err := s.aiClient.ProcessInput(context.Background(), systemPrompt, idea.Content)
 	if err != nil {
