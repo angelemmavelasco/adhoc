@@ -10,10 +10,6 @@ import (
 	"strings"
 )
 
-const systemPrompt = `Eres un experto analizanod ideas de proyectos. 
-Tu tarea es analizar todas las notas, ideas, listas de tareas y entradas que te de
-el usuario y reconocer cuales son los términos clave.`
-
 type IdeaService interface {
 	NewIdea(ctx context.Context, idea models.Idea) (*models.Idea, error)
 	ReadIdeas(ctx context.Context) ([]*models.Idea, error)
@@ -37,11 +33,6 @@ func (s *ideaService) NewIdea(ctx context.Context, idea models.Idea) (*models.Id
 	if len(strings.TrimSpace(idea.Title)) < 3 {
 		return nil, errors.New("title must be at least 3 characters long")
 	}
-	aiResp, err := s.aiClient.ProcessInput(context.Background(), systemPrompt, idea.Content)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Printf("AI response: %s", aiResp)
 
 	dbIdea, err := s.queries.NewIdea(ctx, database.NewIdeaParams{
 		Title:   idea.Title,
